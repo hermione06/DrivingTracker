@@ -1,0 +1,399 @@
+<!DOCTYPE html>   
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driving Experience Form</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            line-height: 1.6;
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            color: #333;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 36px;
+            color: #333;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+        }
+        nav {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        nav .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            text-decoration: none;
+            background-color: #5bc6ff;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        nav .btn:hover {
+            background-color: #1ba6cc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        nav .btn:active {
+            background-color: #1590aa;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        form:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        fieldset {
+            border: none;
+        }
+
+        legend {
+            color: #4a4a4a;
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-size: 16px;
+            color: #5bc6ff; 
+            font-weight: 600; 
+            background: rgba(255, 255, 255, 0.8); 
+            padding: 5px 10px; 
+            border-radius: 5px; 
+            transition: background 0.3s, color 0.3s; 
+        }
+
+        input[type="date"],
+        input[type="time"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 16px;
+            background: #f9f9f9;
+            color: #333;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input[type="date"]:focus,
+        input[type="time"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            border-color: #6a85b6;
+            box-shadow: 0 0 6px rgba(106, 133, 182, 0.5);
+        }
+     
+        .button-container {
+            display: flex;
+            justify-content: center; 
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 20px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            text-decoration: none;
+            background: linear-gradient(45deg, #5bc6ff, #ff9f7f);
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(91, 198, 255, 0.3);
+            transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: linear-gradient(45deg, #ff9f7f, #5bc6ff);
+            box-shadow: 0 6px 18px rgba(255, 159, 127, 0.4);
+            transform: translateY(-2px);
+        }
+        .error-border {
+            border-color: red !important;
+            box-shadow: 0 0 5px rgba(255, 0, 0, 0.8) !important;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        @media (max-width: 600px) {
+            form {
+                padding: 20px;
+            }
+
+            header h1 {
+                font-size: 28px;
+            }
+
+            legend {
+                font-size: 20px;
+            }
+
+            label {
+                font-size: 14px;
+            }
+
+            input[type="date"],
+            input[type="time"],
+            input[type="number"],
+            select {
+                padding: 10px;
+                margin-top: 6px;
+                margin-bottom: 15px;
+                font-size: 14px;
+            }
+
+            button[type="button"] {
+                padding: 12px;
+                font-size: 16px;
+            }
+        }
+    </style>
+   
+</head>
+<body>
+    <header>
+        <h1>Insert New Driving Experience</h1>
+    </header>
+    <form id = "DrivingExpForm">
+            <fieldset>
+                <legend>Driving Experience</legend>
+
+                <!-- Date of driving experience -->
+                <label for="idDate">Date</label>
+                <input type="date" id="idDate" required>
+
+                <!-- Start and End Time -->
+                <label for="idStartTime">Start Time</label>
+                <input type="time" id="idStartTime" required>
+
+                <label for="idEndTime">End Time</label>
+                <input type="time" id="idEndTime" required>
+
+                <!-- Mileage -->
+                <label for="idMileage">Mileage (km)</label>
+                <input type="number" id="idMileage" min="0" required>
+
+                <!-- Weather Dropdown -->
+                <label for="idWeather">Weather</label>
+                <select id="idWeather" required>
+                    <option value="">-- Choose --</option>
+                </select>
+ 
+                <!-- Traffic Dropdown -->
+                <label for="idTraffic">Traffic</label>
+                <select id="idTraffic" required>
+                    <option value="">-- Choose --</option>
+                </select>
+
+                <!-- Maneuver Dropdown -->
+                <label for="idManeuver">Maneuver</label>
+                <select id="idManeuver" required>
+                    <option value="">-- Choose --</option>
+                </select>
+
+                <!-- Road Type Dropdown -->
+                <label for="idRoadType">Road Type</label>
+                <select id="idRoadType" required>
+                    <option value="">-- Choose --</option>
+                </select>
+
+                <!-- Buttons -->
+                <div class="button-container">
+                    <button type="button" onclick="saveExperience()" class="btn">Save</button>
+                    <a href="theDrivingExpList.html" class="btn">See the Driving Experience List</a>
+                </div>
+                <div id="successMessage" style="display: none; text-align: center; color: green; font-weight: bold; margin-top: 20px;"></div>
+            </fieldset>
+        </form>
+    <footer>
+            <!-- Copyright Notice -->
+        <p> <strong>DrivingTracker</strong> &copy; 2024. All rights reserved.</p>
+    </footer>
+    <script>
+
+        let drivingExperienceList = [{"idDrivingExperience":1,"date":"2024-06-18","startingTime":"10:30","endingTime":"12:45","km":38,"idWeather":3,"idTraffic":4,"idManeuver":5,"idRoadType":2},{"idDrivingExperience":2,"date":"2024-07-15","startingTime":"11:30","endingTime":"12:47","km":39,"idWeather":2,"idTraffic":2,"idManeuver":3,"idRoadType":6},{"idDrivingExperience":3,"date":"2024-10-20","startingTime":"8:30","endingTime":"12:45","km":53,"idWeather":1,"idTraffic":2,"idManeuver":4,"idRoadType":5}];
+        // Weather
+        let weatherList = [{"idWeather":1,"weather":"Sunny"},{"idWeather":2,"weather":"Rainy"},{"idWeather":3,"weather":"Windy"},{"idWeather":4,"weather":"Cloudy"},{"idWeather":5,"weather":"Snowy"},{"idWeather":6,"weather":"Stormy"}];
+        // Traffic 
+        let trafficList = [{"idTraffic":1,"traffic":"Light"},{"idTraffic":2,"traffic":"Moderate"},{"idTraffic":3,"traffic":"Heavy"},{"idTraffic":4,"traffic":"Very heavy"},{"idTraffic":5,"traffic":"Rush hour"},{"idTraffic":6,"traffic":"Construction"},{"idTraffic":7,"traffic":"Accident"}];
+        // Maneuvres
+        let maneuverList = [{"idManeuver":1,"maneuver":"Turning"},{"idManeuver":2,"maneuver":"Lane changing"},{"idManeuver":3,"maneuver":"Passing"},{"idManeuver":4,"maneuver":"Parking"},{"idManeuver":5,"maneuver":"Roundabouts"},{"idManeuver":6,"maneuver":"Merging"},{"idManeuver":7,"maneuver":"Stopping"},{"idManeuver":8,"maneuver":"Intersection"},{"idManeuver":9,"maneuver":"U-turn"},{"idManeuver":10,"maneuver":"Emergency stop"}];
+        // Road types
+        let roadTypeList = [{"idRoadType":1,"roadType":"Hill"},{"idRoadType":2,"roadType":"Highway"},{"idRoadType":3,"roadType":"Urban"},{"idRoadType":4,"roadType":"Terrain"},{"idRoadType":5,"roadType":"Rural"},{"idRoadType":6,"roadType":"Expressway"}];
+        let drivingExperienceListString = JSON.stringify(drivingExperienceList);
+
+        console.log(drivingExperienceList);
+        console.log(drivingExperienceListString);
+
+        // Populating dropdowns dynamically with data from lists
+        weatherList.forEach(function(item) {
+            document.getElementById("idWeather").insertAdjacentHTML('beforeend', `<option value="${item.idWeather}">${item.weather}</option>`);
+        });
+        trafficList.forEach(function(item) {
+            document.getElementById("idTraffic").insertAdjacentHTML('beforeend', `<option value="${item.idTraffic}">${item.traffic}</option>`);
+        });
+        maneuverList.forEach(function(item) {
+            document.getElementById("idManeuver").insertAdjacentHTML('beforeend', `<option value="${item.idManeuver}">${item.maneuver}</option>`);
+        });
+        roadTypeList.forEach(function(item) {
+            document.getElementById("idRoadType").insertAdjacentHTML('beforeend', `<option value="${item.idRoadType}">${item.roadType}</option>`);
+        });
+
+        // Retrieve weather - for checking in console
+        drivingExperienceList.forEach(function(item, index){
+            let searchedIdWeather = item.idWeather;
+            let searchedWeather = weatherList.find(weatherElement => weatherElement.idWeather == searchedIdWeather).weather;
+            console.log(`The weather of experience in ${item.date}: ${searchedWeather}`);
+        
+        });
+        /**
+         * This function saves a new driving experience to localStorage after validating the form inputs.
+         */
+        function saveExperience() {
+            // Clear previous errors
+            document.querySelectorAll('.error-message').forEach(msg => msg.remove());
+            document.querySelectorAll('.error-border').forEach(field => field.classList.remove('error-border'));
+
+            var theDate = document.getElementById('idDate').value;
+            var theStartTime = document.getElementById('idStartTime').value;
+            var theEndTime = document.getElementById('idEndTime').value;
+            var theKm = document.getElementById('idMileage').value;
+
+            var theIdWeather = document.getElementById('idWeather').value;
+            var theIdTraffic = document.getElementById('idTraffic').value;
+            var theIdManeuver = document.getElementById('idManeuver').value;
+            var theIdRoadType = document.getElementById('idRoadType').value;
+
+            let valid = true;
+
+            // Highlight missing fields
+            function highlightError(fieldId, message) {
+                const field = document.getElementById(fieldId);
+                field.classList.add('error-border');
+                const errorElement = document.createElement('div');
+                errorElement.className = 'error-message';
+                errorElement.textContent = message;
+                field.insertAdjacentElement('afterend', errorElement);
+                valid = false;
+            }
+
+            if (!theDate) highlightError('idDate', 'Date is required.');
+            if (!theStartTime) highlightError('idStartTime', 'Start Time is required.');
+            if (!theEndTime) highlightError('idEndTime', 'End Time is required.');
+            if (!theKm || theKm <= 0) highlightError('idMileage', 'Mileage must be greater than 0.');
+            if (!theIdWeather) highlightError('idWeather', 'Please select a weather condition.');
+            if (!theIdTraffic) highlightError('idTraffic', 'Please select traffic condition.');
+            if (!theIdManeuver) highlightError('idManeuver', 'Please select a maneuver.');
+            if (!theIdRoadType) highlightError('idRoadType', 'Please select a road type.');
+
+            // Validate time
+            const startTime = document.getElementById('idStartTime').value;
+            const endTime = document.getElementById('idEndTime').value;
+
+            // Split the time strings into hours and minutes
+            const [startHour, startMinute] = startTime.split(':').map(Number);
+            const [endHour, endMinute] = endTime.split(':').map(Number);
+
+            // Compare hours and minutes
+            if (endHour < startHour || (endHour === startHour && endMinute <= startMinute)) {
+                highlightError('idStartTime', 'Start time must be before end time.');
+                highlightError('idEndTime', 'End time must be after start time.');
+                return false;
+            }
+
+            if (!valid) return; // Exit if validation fails
+
+            // Save data
+            drivingExperienceList = [];
+            const dataString = localStorage.getItem('drivingExperienceList');
+            if (dataString != null) drivingExperienceList = JSON.parse(dataString);
+
+            const newIdExperience = drivingExperienceList.length + 1;
+            const newDrivingExperience = {
+                idDrivingExperience: newIdExperience,
+                date: theDate,
+                startingTime: theStartTime,
+                endingTime: theEndTime,
+                km: theKm,
+                idWeather: theIdWeather,
+                idTraffic: theIdTraffic,
+                idManeuver: theIdManeuver,
+                idRoadType: theIdRoadType,
+            };
+
+            drivingExperienceList.push(newDrivingExperience);
+            localStorage.setItem('drivingExperienceList', JSON.stringify(drivingExperienceList));
+
+            document.getElementById('DrivingExpForm').reset();
+
+            // Display success message
+            const successMessage = document.getElementById('successMessage');
+            successMessage.textContent = "Data has been successfully saved.";
+            successMessage.style.display = 'block';
+
+            // Clear form fields after successful save
+            document.getElementById('DrivingExpForm').reset();
+
+            // Hide success message after few second
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 2000);
+
+            console.log('Driving experience added:', newDrivingExperience);
+        }   
+    
+    </script>
+</body>
+</html>
