@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driving Experience List</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            line-height: 1.6;
+            background: #ffffff;
+            color: #333;
+            padding: 20px;
+        }
+
+        nav {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #fff;
+            background: linear-gradient(45deg, #5bc6ff, #ff9f7f);
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin: 0 10px;
+            display: inline-block;
+            transition: background 0.3s, transform 0.2s;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            background: linear-gradient(45deg, #ff9f7f, #5bc6ff);
+            transform: translateY(-2px);
+        }
+
+        h1 {
+            font-size: 36px;
+            color: #333;
+            text-align: center;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            margin: 20px 0;
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        th {
+            background: linear-gradient(135deg, #5bc6ff, #8ec5fc);
+            color: #fff;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #e6f7ff;
+            transition: background-color 0.3s;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+        /* CSS for the chart container */
+        .chart-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #f4f4f9;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);  /* Soft shadow around container */
+        }
+
+        /* Style the chart title */
+        .chart-title {
+            text-align: center;
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        let weatherList = [{"idWeather":1,"weather":"Sunny"},{"idWeather":2,"weather":"Rainy"},{"idWeather":3,"weather":"Windy"},{"idWeather":4,"weather":"Cloudy"},{"idWeather":5,"weather":"Snowy"},{"idWeather":6,"weather":"Stormy"}];
+        let trafficList = [{"idTraffic":1,"traffic":"Light"},{"idTraffic":2,"traffic":"Moderate"},{"idTraffic":3,"traffic":"Heavy"},{"idTraffic":4,"traffic":"Very heavy"},{"idTraffic":5,"traffic":"Rush hour"},{"idTraffic":6,"traffic":"Construction"},{"idTraffic":7,"traffic":"Accident"}];
+        let maneuverList = [{"idManeuver":1,"maneuver":"Turning"},{"idManeuver":2,"maneuver":"Lane changing"},{"idManeuver":3,"maneuver":"Passing"},{"idManeuver":4,"maneuver":"Parking"},{"idManeuver":5,"maneuver":"Roundabouts"},{"idManeuver":6,"maneuver":"Merging"},{"idManeuver":7,"maneuver":"Stopping"},{"idManeuver":8,"maneuver":"Intersection"},{"idManeuver":9,"maneuver":"U-turn"},{"idManeuver":10,"maneuver":"Emergency stop"}];
+        let roadTypeList = [{"idRoadType":1,"roadType":"Hill"},{"idRoadType":2,"roadType":"Highway"},{"idRoadType":3,"roadType":"Urban"},{"idRoadType":4,"roadType":"Terrain"},{"idRoadType":5,"roadType":"Rural"},{"idRoadType":6,"roadType":"Expressway"}];
+
+        // Driving experience list initialized from local storage
+
+        let drivingExpList = [];
+
+        let dataString = localStorage.getItem('drivingExperienceList');
+        if (dataString != null) drivingExpList = JSON.parse(dataString);
+     
+        document.onreadystatechange = function () {
+            if (document.readyState === "complete") {
+                if (drivingExpList.length === 0) {
+                    displayEmptyStateMessage();
+                } else {
+                    displayDrivingExpList(); // Display the list of driving experiences                    
+                    displayMileageChart();  // Display the mileage chart
+                    displayCategoryCounts(); // Display the count for each category
+                    displayWeatherPieChart(); // Display the weather pie chart
+                    displayRoadTypePieChart(); // Display the road type pie chart
+                }
+            }
+        };
+    
+        // Function to display an empty state message
+        function displayEmptyStateMessage() {
+            const emptyMessage = `
+                <div style="text-align:center; margin-top:50px; color:gray;">
+                    <h2>No driving experiences recorded yet.</h2>
+                    <p>Use the "New Driving Experience" button above to add your first entry!</p>
+                </div>`;
+            document.getElementById("main").innerHTML = emptyMessage;
+        }
+    
+        // Function to display the list of driving experiences
+        function displayDrivingExpList() {
+            let mileageSum = 0;
+            let codeHTML = "<table><thead><tr><th>No</th><th>Date</th><th>StartTime</th><th>EndTime</th><th>Mileage(km)</th><th>Weather</th><th>Traffic</th><th>Maneuver</th><th>RoadType</th></tr></thead><tbody>";
+            drivingExpList.forEach(function(item, index) {
+                let searchedWeather = weatherList.find(weatherElement => weatherElement.idWeather == item.idWeather).weather;
+                console.log(`Searching for idWeather: ${item.idWeather}, Found: ${searchedWeather}`);
+
+                let searchedTraffic = trafficList.find(trafficElement => trafficElement.idTraffic == item.idTraffic).traffic;
+                let searchedManeuver = maneuverList.find(maneuverElement => maneuverElement.idManeuver == item.idManeuver).maneuver;
+                let searchedRoadType = roadTypeList.find(roadTypeElement => roadTypeElement.idRoadType == item.idRoadType).roadType;
+
+                mileageSum += parseInt(item.km);// Add mileage to the total sum
+
+                codeHTML += `<tr>
+                    <td>${index + 1}</td>
+                    <td>${item.date}</td>
+                    <td>${item.startingTime}</td>
+                    <td>${item.endingTime}</td>
+                    <td>${item.km}</td>
+                    <td>${searchedWeather}</td>
+                    <td>${searchedTraffic}</td>
+                    <td>${searchedManeuver}</td>
+                    <td>${searchedRoadType}</td>
+                </tr>`;
+            });
+            codeHTML += "</tbody></table>";
+            console.log(codeHTML);  // Check the generated HTML
+
+            document.getElementById('main').insertAdjacentHTML('afterbegin', codeHTML);
+            document.getElementById('main').insertAdjacentHTML('beforeend', `<p>Total Distance Covered: ${mileageSum} km</p>`);
+        }
+        // Function to display the mileage chart using Chart.js
+        function displayMileageChart() {
+            let dates = drivingExpList.map(item => item.date);
+            let kmData = drivingExpList.map(item => item.km);
+
+            let ctx = document.getElementById('kmChart').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'bar',  
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'Mileage (km)',
+                        data: kmData,
+                        backgroundColor: '#5bc6ff',  
+                        borderColor: '#4c9dc6',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            },
+                            ticks: {
+                                autoSkip: true,
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Kilometers'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Function to display category counts (Weather, Traffic, Maneuver, RoadType)
+        function displayCategoryCounts() {
+            displayCategoryCountTable(weatherList, 'Weather', 'idWeather');
+            displayCategoryCountTable(trafficList, 'Traffic', 'idTraffic');
+            displayCategoryCountTable(maneuverList, 'Maneuver', 'idManeuver');
+            displayCategoryCountTable(roadTypeList, 'Road Type', 'idRoadType');
+        }
+        // Function to display category counts in a table format
+        function displayCategoryCountTable(categoryList, categoryName, categoryId) {
+            let categoryCounts = countCategoryOccurrences(drivingExpList, categoryId, categoryList);
+            let summaryHTML = `<h2>${categoryName} Summary</h2><table><thead><tr><th>${categoryName}</th><th>Count</th></tr></thead><tbody>`;
+            
+            categoryCounts.forEach(function(count) {
+                summaryHTML += `<tr><td>${count.category}</td><td>${count.count}</td></tr>`;
+            });
+            summaryHTML += "</tbody></table>";
+            document.getElementById('main').insertAdjacentHTML('beforeend', summaryHTML);
+        }
+
+
+        function displayWeatherPieChart() {
+            let weatherCounts = countCategoryOccurrences(drivingExpList, 'idWeather', weatherList);
+            let labels = weatherCounts.map(item => item.category);
+            let data = weatherCounts.map(item => item.count);
+
+            let ctx = document.getElementById('weatherChart').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: ['#FFC107', '#2196F3', '#FF5722', '#8BC34A', '#9C27B0', '#00BCD4'],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Weather Distribution'
+                        }
+                    }
+                }
+            });
+        }
+        function displayRoadTypePieChart() {
+            let roadTypeCounts = countCategoryOccurrences(drivingExpList, 'idRoadType', roadTypeList);
+            let labels = roadTypeCounts.map(item => item.category);
+            let data = roadTypeCounts.map(item => item.count);
+
+            let ctx = document.getElementById('roadTypeChart').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: ['#FFD700', '#FF6347', '#4682B4', '#32CD32'],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Road Type Distribution'
+                        }
+                    }
+                }
+            });
+        }
+
+
+        // Function to count the occurrences of each category in the driving experiences list
+        function countCategoryOccurrences(list, categoryId, categoryList) {
+            let keyName;
+
+            // Explicitly map categoryId to the correct property name
+            if (categoryId === 'idRoadType') {
+                keyName = 'roadType';
+            } else if (categoryId === 'idWeather') {
+                keyName = 'weather';
+            } else if (categoryId === 'idTraffic') {
+                keyName = 'traffic';
+            } else if (categoryId === 'idManeuver') {
+                keyName = 'maneuver';
+            }
+
+            return categoryList.map(function(category) {
+                let count = list.filter(item => item[categoryId] == category[`id${categoryId.replace('id', '')}`]).length;
+                return { category: category[keyName], count: count };
+            });
+        }
+        // Function to delete all driving experiences
+        function deleteAllDrivingExperiences() {
+            localStorage.removeItem('drivingExperienceList'); // Remove data
+            location.reload(); // Refresh the page to update the UI
+        }
+    </script>    
+</head>
+<body>
+    <nav>
+        <a href="index.html">New Driving Experience</a>
+        <a href="javascript:deleteAllDrivingExperiences();">Delete All</a>
+        
+    </nav>
+    <h1>List of Driving Experiences</h1>
+    <div id="main"></div>
+    <canvas id="kmChart" width="400" height="200"></canvas>
+    <div class="chart-container">
+        <canvas id="weatherChart" width="400" height="200"></canvas>
+    </div>
+    <div class="chart-container">
+        <canvas id="roadTypeChart" width="400" height="200"></canvas>
+    </div>
+    <footer>
+        <p> <strong>DrivingTracker</strong> &copy; 2024. All rights reserved.</p>
+    </footer>    
+</body>
+</html>
